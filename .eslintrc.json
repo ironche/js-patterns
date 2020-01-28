@@ -1,4 +1,5 @@
 {
+  "root": true,
   "plugins": [
     "jasmine"
   ],
@@ -20,6 +21,8 @@
     "sourceType": "module"
   },
   "rules": {
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "no-plusplus": "off",
+    "func-names": "off"
   }
 }
