@@ -6,6 +6,6 @@ export function Singleton() {
   Object.freeze(this.constructor);
 }
 
-Singleton.getInstance = function () {
+Singleton.getInstance = function() {
   return new Singleton();
 };

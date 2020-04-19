@@ -1,7 +1,7 @@
 export function Shape(name) {
   this.name = name;
 
-  this.description = function () {
+  this.description = function() {
     return this.name;
   };
 }
@@ -11,7 +11,7 @@ export function ColorDecorator(color, shape = { name: '' }) {
   this.shape = shape;
   this.color = color;
 
-  this.description = function () {
+  this.description = function() {
     return `${this.color} ${this.shape.description()}`;
   };
 }
@@ -24,7 +24,7 @@ export function TransformDecorator(transform, shape = { name: '' }) {
   this.shape = shape;
   this.transform = transform;
 
-  this.description = function () {
+  this.description = function() {
     return `${this.transform} ${this.shape.description()}`;
   };
 }

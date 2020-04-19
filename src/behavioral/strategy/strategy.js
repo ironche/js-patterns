@@ -1,10 +1,10 @@
 export function Product(price) {
   let vat;
 
-  this.setVatStrategy = function (v) {
+  this.setVatStrategy = function(v) {
     vat = v;
   };
-  this.getPrice = function () {
+  this.getPrice = function() {
     return +(price * vat.multiplier()).toFixed(2);
   };
 }
