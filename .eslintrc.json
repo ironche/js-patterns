@@ -23,6 +23,14 @@
   "rules": {
     "import/prefer-default-export": "off",
     "no-plusplus": "off",
-    "func-names": "off"
+    "func-names": "off",
+    "space-before-function-paren": ["error", "never"],
+    "no-use-before-define": [
+      "error", {
+        "functions": false,
+        "classes": true,
+        "variables": true
+      }
+    ]
   }
 }

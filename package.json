@@ -6,6 +6,7 @@
   "scripts": {
     "start": "npm run lint && npm test",
     "lint": "eslint src/**",
+    "lint:fix": "npm run lint -- --fix",
     "lint:watch": "nodemon --exec npm run lint",
     "test": "jasmine --config=jasmine.json",
     "test:watch": "nodemon --exec npm test"
@@ -16,6 +17,7 @@
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-jasmine": "^4.1.0",
     "esm": "^3.2.25",
+    "husky": "^4.2.5",
     "jasmine": "^3.5.0",
     "nodemon": "^2.0.2"
   },
