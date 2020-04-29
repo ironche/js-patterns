@@ -1,35 +1,19 @@
-import { Subject, DebounceTimeVisitor, DistinctUntilChangedVisitor } from './visitor';
+import { Subject, debounceTime, distinctUntilChanged } from './visitor2';
 
-describe('Visitor as class', () => {
+describe('Visitor as function', () => {
   let subscription;
-  let distinctUntilChangedVisitor;
-  let debounceTimeVisitor;
   let element;
 
   beforeEach(() => {
     subscription = jasmine.createSpy('callback');
-    distinctUntilChangedVisitor = new DistinctUntilChangedVisitor();
-    debounceTimeVisitor = new DebounceTimeVisitor(100);
     element = new Subject();
-  });
-
-  it('should visit element', () => {
-    const spy1 = spyOn(distinctUntilChangedVisitor, 'visit');
-    const spy2 = spyOn(debounceTimeVisitor, 'visit');
-
-    element
-      .accept(distinctUntilChangedVisitor, debounceTimeVisitor)
-      .subscribe(subscription);
-
-    [spy1, spy2].forEach((s) => {
-      expect(s).toHaveBeenCalledTimes(1);
-      expect(s).toHaveBeenCalledWith(element);
-    });
   });
 
   it('should call notify only if value is different', () => {
     element
-      .accept(distinctUntilChangedVisitor)
+      .pipe(
+        distinctUntilChanged(),
+      )
       .subscribe(subscription);
 
     for (let i = 0; i < 5; i++) {
@@ -49,7 +33,9 @@ describe('Visitor as class', () => {
     });
 
     element
-      .accept(debounceTimeVisitor)
+      .pipe(
+        debounceTime(100),
+      )
       .subscribe(subscription);
 
     for (let i = 0; i < 5; i++) {

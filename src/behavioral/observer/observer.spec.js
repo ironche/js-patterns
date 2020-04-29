@@ -1,49 +1,45 @@
 import { Subject, BehaviorSubject, combineLatest } from './observer';
 
 describe('Observer', () => {
-  const fns = {
-    fn1: () => {},
-    fn2: () => {},
-    fn3: () => {},
-  };
-  let spy1;
-  let spy2;
-  let spy3;
+  let subscriptions;
 
   beforeEach(() => {
-    spy1 = spyOn(fns, 'fn1');
-    spy2 = spyOn(fns, 'fn2');
-    spy3 = spyOn(fns, 'fn3');
+    subscriptions = [];
+    for (let i = 0; i < 3; i++) {
+      subscriptions.push(jasmine.createSpy(`callback-${i}`));
+    }
   });
 
   describe('Subject', () => {
     it('should subscribe distinct subscribers', () => {
       const app = new Subject();
-      Object.keys(fns).forEach((k) => {
-        app.subscribe(fns[k]);
+      subscriptions.forEach((s) => {
+        app.subscribe(s);
       });
       expect(app.observers.length).toBe(3);
     });
 
     it('should not subscribe existing subscriber', () => {
       const app = new Subject();
+      const callback = subscriptions[0];
       for (let i = 0; i < 3; i++) {
-        app.subscribe(fns.fn1);
+        app.subscribe(callback);
       }
       expect(app.observers.length).toBe(1);
     });
 
     it('should unsubscribe', () => {
       const app = new Subject();
-      app.subscribe(fns.fn1);
-      app.unsubscribe(fns.fn1);
+      const callback = subscriptions[0];
+      app.subscribe(callback);
+      app.unsubscribe(callback);
       expect(app.observers.length).toBe(0);
     });
 
     it('should unsubscribe all', () => {
       const app = new Subject();
-      Object.keys(fns).forEach((k) => {
-        app.subscribe(fns[k]);
+      subscriptions.forEach((s) => {
+        app.subscribe(s);
       });
       app.unsubscribeAll();
       expect(app.observers.length).toBe(0);
@@ -53,16 +49,16 @@ describe('Observer', () => {
       const app = new Subject();
       const data = 'Loading...';
 
-      app.subscribe(fns.fn1);
-      app.subscribe(fns.fn2);
-      app.notify(data);
-      app.subscribe(fns.fn3);
+      app.subscribe(subscriptions[0]);
+      app.subscribe(subscriptions[1]);
+      app.next(data);
+      app.subscribe(subscriptions[2]);
 
-      [spy1, spy2].forEach((s) => {
-        expect(s).toHaveBeenCalledTimes(1);
-        expect(s).toHaveBeenCalledWith(data);
-      });
-      expect(spy3).not.toHaveBeenCalled();
+      for (let i = 0; i < 2; i++) {
+        expect(subscriptions[i]).toHaveBeenCalledTimes(1);
+        expect(subscriptions[i]).toHaveBeenCalledWith(data);
+      }
+      expect(subscriptions[2]).not.toHaveBeenCalled();
     });
   });
 
@@ -71,33 +67,35 @@ describe('Observer', () => {
       const app = new BehaviorSubject();
       const data = 'Loading...';
 
-      app.subscribe(fns.fn1);
-      app.subscribe(fns.fn2);
-      app.notify(data);
-      app.subscribe(fns.fn3);
+      app.subscribe(subscriptions[0]);
+      app.subscribe(subscriptions[1]);
+      app.next(data);
+      app.subscribe(subscriptions[2]);
 
-      [spy1, spy2, spy3].forEach((s) => {
-        expect(s).toHaveBeenCalledTimes(1);
-        expect(s).toHaveBeenCalledWith(data);
-      });
+      for (let i = 0; i < 3; i++) {
+        expect(subscriptions[i]).toHaveBeenCalledTimes(1);
+        expect(subscriptions[i]).toHaveBeenCalledWith(data);
+      }
     });
 
     it('should combine multiple subjects into one', () => {
       const comp1 = new BehaviorSubject();
       const comp2 = new BehaviorSubject();
+      const callback = subscriptions[0];
 
-      comp1.notify(1);
-      comp2.notify(2);
-      combineLatest(comp1, comp2).subscribe(fns.fn1);
+      comp1.next(1);
+      comp2.next(2);
 
-      expect(spy1).toHaveBeenCalledTimes(1);
-      expect(spy1).toHaveBeenCalledWith([1, 2]);
+      combineLatest(comp1, comp2).subscribe(callback);
 
-      comp1.notify(10);
-      comp2.notify(20);
+      expect(callback).toHaveBeenCalledTimes(1);
+      expect(callback).toHaveBeenCalledWith([1, 2]);
 
-      expect(spy1).toHaveBeenCalledTimes(3);
-      expect(spy1).toHaveBeenCalledWith([10, 20]);
+      comp1.next(10);
+      comp2.next(20);
+
+      expect(callback).toHaveBeenCalledTimes(3);
+      expect(callback).toHaveBeenCalledWith([10, 20]);
     });
   });
 });
