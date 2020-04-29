@@ -11,6 +11,10 @@
     "test": "jasmine --config=jasmine.json",
     "test:watch": "nodemon --exec npm test"
   },
+  "engines": {
+    "node": ">=12"
+  },
+  "private": true,
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
@@ -20,9 +24,5 @@
     "husky": "^4.2.5",
     "jasmine": "^3.5.0",
     "nodemon": "^2.0.3"
-  },
-  "engines": {
-    "node": ">=12"
-  },
-  "private": true
+  }
 }
